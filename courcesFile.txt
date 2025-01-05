@@ -1,0 +1,7 @@
+2
+3
+math1 3
+phisic1 2
+c-programming 3
+1
+math2 3
