@@ -1,4 +1,6 @@
-# ``---------Student Adding Info System---------`` #
+# ``------Student Adding Info System------`` #
+
+
 
 ## Description ##
 This Is a system for adding,removing,editing,setting grad and ets.that is writting by c languge.
