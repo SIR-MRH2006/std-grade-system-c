@@ -177,6 +177,15 @@ void addCorceInfoToFile(storeSemester courceOfTerm[],int count,FILE *ptrToCource
     }
 }
 
+void showStudentdCourses(struct studentform student[],int indexOfStudent){
+    int count = student[indexOfStudent].term[student[indexOfStudent].currentTerm].countOfCorses;
+    printf("\nplease choose one of these courses\n___________________________________________________________________\n");
+    for(int i = 0;i<count;i++){
+        printf("-%d) %s\n",i+1,student[indexOfStudent].term[student[indexOfStudent].currentTerm].cource[i].book);
+    }
+    printf("___________________________________________________________________\n");
+}
+
 //====================================================={ KEY FUNCTIONS }================================================//
 void addStudent(struct studentform student[],int *count,FILE *ptrToStudenstFile,storeSemester courceOfTerm[]){
     printf("\nFirstName : ex(mohammad) => "); 
@@ -360,7 +369,9 @@ void editStudentGrade(struct studentform student[],int *count,FILE *ptrToStudens
         char courceName[30];
         do{
             printf("\n");
-            showCources(courceOfTerm,student[indexOfStudent].currentTerm);
+            //we can show all of courses in student term(i just use callback func);
+            // showCources(courceOfTerm,student[indexOfStudent].currentTerm);
+            showStudentdCourses(student,indexOfStudent);
             printf("please enter cource name (write exit to exit) ");
             scanf("%s",courceName);
             int indexOfCource = findCourceIndex(courceName,student,*count,indexOfStudent);
