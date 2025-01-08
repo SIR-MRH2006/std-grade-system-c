@@ -6,7 +6,7 @@
 //students struct
 struct grades{
     char book[30];
-    int grade;
+    float grade;
 };
 struct courceInTerm{
     int numOfTerm;
@@ -54,7 +54,7 @@ enum month_of_a_year{
 typedef enum month_of_a_year monthes;
 
 //====================================={ AUXILIRARY FUNCTION }===================================//
-//add to a {FILE}
+//add {STUDENT} to a {FILE}
 void addStudentInfoToFile (FILE *ptrToStudenstFile,struct studentform student[],int *count){
     ptrToStudenstFile = fopen("studentFile.txt","w");
     if(ptrToStudenstFile == NULL){
@@ -63,19 +63,46 @@ void addStudentInfoToFile (FILE *ptrToStudenstFile,struct studentform student[],
 
         fprintf(ptrToStudenstFile,"%d \n",*count);
         for(int i = 0 ; i< *count; i++){
-            fprintf(ptrToStudenstFile,"%s %s %s %d %d %d %d %d %d\n",student[i].firstName,student[i].lastName,student[i].fullName,student[i].birthDate[0],student[i].birthDate[1],student[i].birthDate[2],student[i].studentNumber,student[i].gender,student[i].currentTerm);
-
+            fprintf(ptrToStudenstFile,"%s %s %s %d %d %d %d %d %d\n",
+            student[i].firstName,
+            student[i].lastName,
+            student[i].fullName,
+            student[i].birthDate[0],
+            student[i].birthDate[1],
+            student[i].birthDate[2],
+            student[i].studentNumber,
+            student[i].gender,
+            student[i].currentTerm);
             for(int t = 0 ; t<student[i].currentTerm;t++){
                 fprintf(ptrToStudenstFile,"%d",t+1);
                 fprintf(ptrToStudenstFile,"\n%d\n",student[i].term[student[i].currentTerm].countOfCorses);
                 for(int j = 0; j<student[i].term[student[i].currentTerm].countOfCorses;j++){
-                    fprintf(ptrToStudenstFile,"%s %d\n",student[i].term[student[i].currentTerm].cource[j].book,student[i].term[student[i].currentTerm].cource[j].grade);   
+                    fprintf(ptrToStudenstFile,"%s %.1f\n",
+                    student[i].term[student[i].currentTerm].cource[j].book,
+                    student[i].term[student[i].currentTerm].cource[j].grade);   
                 }
                 printf("\t");
             }
             fprintf(ptrToStudenstFile,"\n");
         }
         fclose(ptrToStudenstFile);
+    }
+}
+
+// COURSES TO FILE
+void addCorceInfoToFile(storeSemester courceOfTerm[],int count,FILE *ptrToCourceFile){
+    ptrToCourceFile = fopen("courcesFile.txt","w");
+    if(ptrToCourceFile == NULL){
+        printf("-----------file is not defind-------------- \n");
+    }else{
+        fprintf(ptrToCourceFile,"%d\n",count);
+        for(int i = 0;i<count;i++){
+            fprintf(ptrToCourceFile,"%d\n",courceOfTerm[i].countOfCource);
+            for(int j = 0;j<courceOfTerm[i].countOfCource;j++){
+                fprintf(ptrToCourceFile,"%s %d\n",courceOfTerm[i].cource[j].semesterName,courceOfTerm[i].cource[j].credits);
+            }
+        }
+        fclose(ptrToCourceFile);
     }
 }
 //get {COURCES}
@@ -161,21 +188,6 @@ int findCourceIndex(char *courceName,struct studentform student[],int count,int 
     }
 }
 
-void addCorceInfoToFile(storeSemester courceOfTerm[],int count,FILE *ptrToCourceFile){
-    ptrToCourceFile = fopen("courcesFile.txt","w");
-    if(ptrToCourceFile == NULL){
-        printf("-----------file is not defind-------------- \n");
-    }else{
-        fprintf(ptrToCourceFile,"%d\n",count);
-        for(int i = 0;i<count;i++){
-            fprintf(ptrToCourceFile,"%d\n",courceOfTerm[i].countOfCource);
-            for(int j = 0;j<courceOfTerm[i].countOfCource;j++){
-                fprintf(ptrToCourceFile,"%s %d\n",courceOfTerm[i].cource[j].semesterName,courceOfTerm[i].cource[j].credits);
-            }
-        }
-        fclose(ptrToCourceFile);
-    }
-}
 
 void showStudentdCourses(struct studentform student[],int indexOfStudent){
     int count = student[indexOfStudent].term[student[indexOfStudent].currentTerm].countOfCorses;
@@ -313,40 +325,82 @@ void editStudentInfo(struct studentform student[],int *count,FILE *ptrToStudenst
                     char newFirstName[30];
                     scanf("%s",newFirstName);
                     strcpy(student[indexOfStudent].firstName,newFirstName);
-                    printf("-----------succesfully change----------- \n");break;
+                    printf("----------------------------succesfully change------------------------- \n");break;
             case 2: printf("last name is : ");
                     char newLastName[30];
                     scanf("%s",newLastName); ;break;
                     strcpy(student[indexOfStudent].lastName,newLastName);
-                    printf("-----------succesfully change----------- \n");break;
-            case 3: printf("year Of birth  is : ");
+                    printf("----------------------------succesfully change------------------------- \n");break;
+            case 3: {        //its a very imporatant key => in switch-case structure we must add varibale in {code-block};
                     int newYearOfBirth;
-                    scanf("%d",&newYearOfBirth);
-                    student[indexOfStudent].birthDate[0] = newYearOfBirth;
-                    printf("month Of birth  is : ");
                     int newmonthOfBirth;
-                    scanf("%d",&newmonthOfBirth);
-                    student[indexOfStudent].birthDate[1] = newmonthOfBirth;
-                    printf("day Of birth  is : ");
                     int newdayOfBirth;
-                    scanf("%d",&newdayOfBirth);
-                    student[indexOfStudent].birthDate[2] = newdayOfBirth;
-                    printf("-----------succesfully change----------- \n");break;
-            case 4: printf("student-number is : ");
+                    do{
+                        printf("year Of birth  is : ");
+                        scanf("%d",&newYearOfBirth);
+                        if(newYearOfBirth>1300 && newYearOfBirth<1385){
+                            student[indexOfStudent].birthDate[0] = newYearOfBirth;
+                        }else{
+                            printf("---------------------please enter valid year-----------------------\n");
+                        }
+                    }while(!(newYearOfBirth>1300 && newYearOfBirth<1385));
+                    do{
+                        printf("month Of birth  is : ");
+                        scanf("%d",&newmonthOfBirth);
+                        if(newmonthOfBirth>0 && newmonthOfBirth<=12){
+                            student[indexOfStudent].birthDate[1] = newmonthOfBirth;
+                        }else{
+                            printf("------------------------please enter valid month-num--------------------\n");
+                        }
+                    }while(!(newmonthOfBirth>0 && newmonthOfBirth<=12));
+                    do{
+                        printf("day Of birth  is : ");
+                        scanf("%d",&newdayOfBirth);
+                        if(newdayOfBirth>0 && newdayOfBirth<=31){
+                            student[indexOfStudent].birthDate[2] = newdayOfBirth;
+                        }else{
+                            printf("-----------------please enter valid day-num--------------\n");
+                        }
+                    }while(!(newdayOfBirth>0 && newdayOfBirth<=31));
+
+                    printf("----------------------------succesfully change------------------------- \n");break;}
+            case 4:{
                     int newStudentNumber;
-                    scanf("%d",&newStudentNumber);
-                    student[indexOfStudent].studentNumber = newStudentNumber;
-                    printf("-----------succesfully change----------- \n");break;
-            case 5: printf("gender is :(male:1)/(female:0) ");
+                    do{
+                        printf("student-number is : ");
+                        scanf("%d",&newStudentNumber);
+                        if(newStudentNumber>=10000){
+                            student[indexOfStudent].studentNumber = newStudentNumber;
+                        }else{
+                            printf("---------------the student-number cant be less than 10000-----------------\n");
+                        }
+                    }while(!(newStudentNumber>=10000));
+                    printf("----------------------------succesfully change------------------------- \n");break;}
+            case 5:{
                     int newGender;
-                    scanf("%d",&newGender);
-                    student[indexOfStudent].gender = newGender;
-                    printf("-----------succesfully change----------- \n");break;
-            case 6: printf("currentTerm name is : ");
+                    do{
+                        printf("gender is :(male:1)/(female:0) ");
+                        scanf("%d",&newGender);
+                        if(newGender==1 || newGender==0){
+                            student[indexOfStudent].gender = newGender;
+                        }else{
+                            printf("--------------please enter only 0 or 1-------------\n");
+                        }
+                    }while(!(newGender==1 || newGender==0));
+
+                    printf("----------------------------succesfully change------------------------- \n");break;}
+            case 6:{
                     int newcurrentTerm;
-                    scanf("%d",&newcurrentTerm);
-                    student[indexOfStudent].currentTerm = newcurrentTerm;
-                    printf("-----------succesfully change----------- \n");break;
+                    do{
+                        printf("currentTerm name is : ");
+                        scanf("%d",&newcurrentTerm);
+                        if(newcurrentTerm>=1 && newcurrentTerm<=10){
+                            student[indexOfStudent].currentTerm = newcurrentTerm;
+                        }else{
+                            printf("------------please enter a number between 1 til 10-------------\n");
+                        }
+                    }while(!(newcurrentTerm>=1 && newcurrentTerm<=10));
+                    printf("----------------------------succesfully change------------------------- \n");break;}
             default : editStudentInfo(student,count,ptrToStudenstFile);break;
         }
         char fullName[50];
@@ -377,8 +431,8 @@ void editStudentGrade(struct studentform student[],int *count,FILE *ptrToStudens
             int indexOfCource = findCourceIndex(courceName,student,*count,indexOfStudent);
             if(indexOfCource != -1){
                 printf("please enter the grade ");
-                int newgrade;
-                scanf("%d",&newgrade); 
+                float newgrade;
+                scanf("%f",&newgrade); 
                 if(newgrade >= 0 && newgrade<= 20){
                     student[indexOfStudent].term[student[indexOfStudent].currentTerm].cource[indexOfCource].grade = newgrade;
                 }else{
@@ -396,14 +450,20 @@ void editStudentGrade(struct studentform student[],int *count,FILE *ptrToStudens
 }
 
 //------------------{SHOW-STUDENTS}--------------------//
-void showStudentInfo(struct studentform student[],int count){
+void showAllStudentInfo(struct studentform student[],int count){
     if(count != 0){
         printf("\n_____________________________________________________________________________________________________________________________________________________________________________________________\n\n\n");
         printf("--------------------------------------------------------------------------------------------------------------------\n");      
         int i;
         for(i = 0;i<count;i++){
             printf("name : %s %s \t",student[i].firstName,student[i].lastName);
-            printf("birhDate : %d/%d/%d\t",student[i].birthDate[0],student[i].birthDate[1],student[i].birthDate[2]);
+            if((student[i].birthDate[1])/10 == 0){
+                printf("birhDate : %d/0%d/%d\t",student[i].birthDate[0],student[i].birthDate[1],student[i].birthDate[2]);
+            }else if((student[i].birthDate[2])/10 == 0){
+                printf("birhDate : %d/%d/0%d\t",student[i].birthDate[0],student[i].birthDate[1],student[i].birthDate[2]);
+            }else{
+                printf("birhDate : %d/%d/%d\t",student[i].birthDate[0],student[i].birthDate[1],student[i].birthDate[2]);
+            }
             printf("student-Number : %d \t",student[i].studentNumber);
             if(student[i].gender == 1){
                 printf("gender : male \t");
@@ -415,7 +475,7 @@ void showStudentInfo(struct studentform student[],int count){
             for(int t = 1;t<=student[i].currentTerm;t++){
                 printf("term %d => ",t);
                 for(int j = 0;j<student[i].term[t].countOfCorses;j++){
-                    printf("%s %d / ",student[i].term[t].cource[j].book,student[i].term[t].cource[j].grade);
+                    printf("%s %.1f / ",student[i].term[t].cource[j].book,student[i].term[t].cource[j].grade);
                 }
                 printf("\n");
             }
@@ -424,6 +484,50 @@ void showStudentInfo(struct studentform student[],int count){
         printf("\n_____________________________________________________________________________________________________________________________________________________________________________________________\n");
     }else{
         printf("------------------ {we dont have any students} ------------------\n");
+    }
+}
+
+//------------------{SHOW-STUDENT}--------------------//
+void showStudentInfo(struct studentform student[],int count){
+    printf("which of these info of student do you have? \n1)fullName(without space) \t2)student-number \n");
+    int userSecondChoice;
+    scanf("%d",&userSecondChoice);
+    int indexOfStudent = findStudentIndex(userSecondChoice,student,count);
+    if(indexOfStudent != -1){
+        // show student personal info
+        printf("______________________________________________________________________________________________\nSTUDENT PERSONAL INFO=>\n");
+        printf("name : %s %s \t",student[indexOfStudent].firstName,student[indexOfStudent].lastName);
+        if((student[indexOfStudent].birthDate[1])/10 == 0){
+            printf("birhDate : %d/0%d/%d\t",student[indexOfStudent].birthDate[0],student[indexOfStudent].birthDate[1],student[indexOfStudent].birthDate[2]);
+        }else if((student[indexOfStudent].birthDate[2])/10 == 0){
+            printf("birhDate : %d/%d/0%d\t",student[indexOfStudent].birthDate[0],student[indexOfStudent].birthDate[1],student[indexOfStudent].birthDate[2]);
+        }else{
+            printf("birhDate : %d/%d/%d\t",student[indexOfStudent].birthDate[0],student[indexOfStudent].birthDate[1],student[indexOfStudent].birthDate[2]);
+        }
+        printf("student-Number : %d \t",student[indexOfStudent].studentNumber);
+        if(student[indexOfStudent].gender == 1){
+            printf("gender : male \t");
+        }else{
+            printf("gender : female \t");
+        }
+        printf("term%d\n",student[indexOfStudent].currentTerm);
+        // show student Courses
+        printf("-------------------------------------------------\nSTUDENT COURSES INFO=>\n");
+        for(int j = 1;j<(student[indexOfStudent].currentTerm)+1;j++){
+            printf("term%d=> ",j);
+            for(int i = 0;i<student[indexOfStudent].term[student[indexOfStudent].currentTerm].countOfCorses;i++){
+            printf("%s %.1f\t",
+            student[indexOfStudent].term[j].cource[i].book,
+            student[indexOfStudent].term[j].cource[i].grade);
+            }
+            if(j==(student[indexOfStudent].currentTerm)){
+            printf("{{current-term}}");
+            }
+            printf("\n");
+        }
+        printf("______________________________________________________________________________________________\n");
+    }else{
+        showStudentInfo(student,count);
     }
 }
 
@@ -485,7 +589,6 @@ void addCourcesToStudent(struct studentform student[],int *count,FILE *ptrToStud
         scanf("%d",&userChoiceCource);
         if(userChoiceCource >=1 && userChoiceCource<=courceOfTerm[(student[studentIndex].currentTerm)-1].countOfCource){
             int isexist = 0;
-            printf("aaaaaaaa%s",courceOfTerm[student[studentIndex].term[student[studentIndex].currentTerm].numOfTerm].cource[userChoiceCource-1].semesterName);
             for(int i = 0;i<(student[studentIndex].term[student[studentIndex].currentTerm].countOfCorses);i++){
                 int result = strcmp(student[studentIndex].term[student[studentIndex].currentTerm].cource[i].book,courceOfTerm[student[studentIndex].term[student[studentIndex].currentTerm].numOfTerm].cource[userChoiceCource-1].semesterName);
                 if(result == 0){
@@ -496,6 +599,10 @@ void addCourcesToStudent(struct studentform student[],int *count,FILE *ptrToStud
                 strcpy(student[studentIndex].term[student[studentIndex].currentTerm].cource[(student[studentIndex].term[student[studentIndex].currentTerm].countOfCorses)].book,courceOfTerm[(student[studentIndex].currentTerm)-1].cource[userChoiceCource-1].semesterName);
                 student[studentIndex].term[student[studentIndex].currentTerm].cource[student[studentIndex].term[student[studentIndex].currentTerm].countOfCorses].grade = 0;
                 (student[studentIndex].term[student[studentIndex].currentTerm].countOfCorses)++;
+                printf("you added %s to %s %s\n",
+                courceOfTerm[student[studentIndex].term[student[studentIndex].currentTerm].numOfTerm].cource[userChoiceCource-1].semesterName,
+                student[studentIndex].firstName,
+                student[studentIndex].lastName);
                 printf("-----------succesfully add cource to %s %s------------------ \n",student[studentIndex].firstName,student[studentIndex].lastName);
                 addStudentInfoToFile(ptrToStudenstFile,student,count);
             }else{
@@ -518,14 +625,17 @@ void removeCourcesToStudent(struct studentform student[],int *count,FILE *ptrToS
     scanf("%d",&userSecondChoice);
     int studentIndex = findStudentIndex(userSecondChoice,student,*count);
     if(studentIndex != -1){
-        printf("sstudent name: %s\n",student[studentIndex].fullName);
+        printf("student name: %s %s\n",student[studentIndex].firstName,student[studentIndex].lastName);
         int courceIndex;
         // do{
             printf("please enter cource name : ");
             char courceName[30];
             scanf("%s",courceName);
             courceIndex = findCourceIndex(courceName,student,*count,studentIndex);
-            printf("student namec: %s\tstudnt cource name: %s\n",student[studentIndex].fullName,student[studentIndex].term[student[studentIndex].currentTerm].cource[courceIndex]);
+            printf("student name: %s %s\tstudnt cource name: %s\n",
+            student[studentIndex].firstName,
+            student[studentIndex].lastName,
+            student[studentIndex].term[student[studentIndex].currentTerm].cource[courceIndex]);
             if(courceIndex != -1){
                 for(int i = courceIndex;i<(student[studentIndex].term[student[studentIndex].currentTerm].countOfCorses)-1;i++){
                     student[studentIndex].term[student[studentIndex].currentTerm].cource[i] = student[studentIndex].term[student[studentIndex].currentTerm].cource[i+1];
@@ -573,13 +683,24 @@ int main(){
             int countOfStudent;
             fscanf(ptrToStudenstFile,"%d",&countOfStudent);
             for(int i = 0 ; i<countOfStudent; i++){
-                fscanf(ptrToStudenstFile,"%s %s %s %d %d %d %d %d %d",student[i].firstName,student[i].lastName,student[i].fullName,&student[i].birthDate[0],&student[i].birthDate[1],&student[i].birthDate[2],&student[i].studentNumber,&student[i].gender,&student[i].currentTerm  );
+                fscanf(ptrToStudenstFile,"%s %s %s %d %d %d %d %d %d",
+                student[i].firstName,
+                student[i].lastName,
+                student[i].fullName,
+                &student[i].birthDate[0],
+                &student[i].birthDate[1],
+                &student[i].birthDate[2],
+                &student[i].studentNumber,
+                &student[i].gender,
+                &student[i].currentTerm);
                 for(int j=0; j<student[i].currentTerm;j++){
                     int termName;
                     fscanf(ptrToStudenstFile,"%d",&termName);
                     fscanf(ptrToStudenstFile,"%d",&student[i].term[termName].countOfCorses);
                     for(int t = 0;t<student[i].term[termName].countOfCorses;t++){
-                        fscanf(ptrToStudenstFile,"%s %d",student[i].term[termName].cource[t].book,&student[i].term[termName].cource[t].grade);
+                        fscanf(ptrToStudenstFile,"%s %f",
+                        student[i].term[termName].cource[t].book,
+                        &student[i].term[termName].cource[t].grade);
                     }
                 }
                 fscanf(ptrToStudenstFile,"");
@@ -589,7 +710,7 @@ int main(){
             //{MENU}
             int userFirstChoice;
             do{
-                printf("\n\n         {~~~~~~~~ Please Choose One Of Them ~~~~~~~~}     \n1)Add student \n2)Remove student \n3)Edit student info \n4)Edit student grade \n5)show students\n6)add Cource\n7)Edit cource info(incomplete)\n8)Show Cources \n9)add Cources To Student \n10)remove Cources To Student \n0)Exit \n");
+                printf("\n\n         {~~~~~~~~ Please Choose One Of Them ~~~~~~~~}     \n1)Add student \n2)Remove student \n3)Edit student info \n4)Edit student grade \n5)show all students\n6)add Cource\n7)Edit cource info(incomplete)\n8)Show Cources \n9)add Cources To Student \n10)remove Cources To Student \n11)showStudentInfo \n0)Exit \n");
                 scanf("%d",&userFirstChoice);
                 switch(userFirstChoice){
                     //studentInfo function
@@ -597,7 +718,7 @@ int main(){
                     case 2 : removeStudent(student,&countOfStudent,ptrToStudenstFile);break;
                     case 3 : editStudentInfo(student,&countOfStudent,ptrToStudenstFile);break;
                     case 4 : editStudentGrade(student,&countOfStudent,ptrToStudenstFile,courceOfTerm,countOfCorcesOfTerm,showCources);break; //callback funcion//
-                    case 5 : showStudentInfo(student,countOfStudent);break;
+                    case 5 : showAllStudentInfo(student,countOfStudent);break;
                     //Cources function;
                     case 6 : addCource(courceOfTerm,&countOfCorcesOfTerm,ptrToCourceFile);break;
                     case 7 : ;break;
@@ -605,6 +726,7 @@ int main(){
                     //Tarkibi Porro...
                     case 9 : addCourcesToStudent(student,&countOfStudent,ptrToStudenstFile,courceOfTerm,countOfCorcesOfTerm);break;
                     case 10 : removeCourcesToStudent(student,&countOfStudent,ptrToStudenstFile);break;
+                    case 11 : showStudentInfo(student,countOfStudent);break;
                     case 0 : return 0;
                     default : printf("-----------please enter a valid number-------------- \n");break;
                 }
