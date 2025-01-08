@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-//------make student's {STRUCTURE}-----
+//------make {STUDENT}'s {STRUCTURE}-----
 //students struct
 struct grades{
     char book[30];
@@ -24,7 +24,19 @@ struct studentform{
     struct courceInTerm term[10];
 };
 
-//students struct
+//------make {TEACHER}'s {STRUCTURE}-----
+typedef struct{
+    char name[30];
+    int addressOfClass;
+} varOfCorse;
+typedef struct{
+    char firstName[50];
+    char lastName[50];
+    int countOfCours;
+    varOfCorse cource[10];
+} varOfTeacher;
+
+//------make {COURSE}'s {STRUCTURE}-----
 struct courceForm{
     char semesterName[30];
     int credits;
@@ -59,7 +71,7 @@ void addStudentInfoToFile (FILE *ptrToStudenstFile,struct studentform student[],
     ptrToStudenstFile = fopen("studentFile.txt","w");
     if(ptrToStudenstFile == NULL){
         printf("file isnot defind \n");
-    }else{                                   ;
+    }else{                                   
 
         fprintf(ptrToStudenstFile,"%d \n",*count);
         for(int i = 0 ; i< *count; i++){
@@ -105,6 +117,25 @@ void addCorceInfoToFile(storeSemester courceOfTerm[],int count,FILE *ptrToCource
         fclose(ptrToCourceFile);
     }
 }
+
+// TEACHERS TO FILE
+
+void addTeacherInfoToFile(varOfTeacher teacher[],int *count,FILE *ptrToTeacherFile){
+    printf("aaaaaaaaaaa");
+    ptrToTeacherFile = fopen("techerFile.txt","wb");
+    if(ptrToTeacherFile != NULL){
+        printf("bbbbbbbbbbbbbbbbb");
+        fwrite(count,sizeof(int),1,ptrToTeacherFile);
+        printf("dddddddddddddddd");
+        fwrite(teacher,sizeof(varOfTeacher),*count,ptrToTeacherFile);
+        printf("ccccccccccccccccc");
+        fclose(ptrToTeacherFile);
+        printf("ccccccccccccccccc2");
+    }else{
+        printf("---");
+    }
+}
+
 //get {COURCES}
 void getCources(struct studentform student[],int *count,storeSemester courceOfTerm[]){
     int userCource;
@@ -328,7 +359,7 @@ void editStudentInfo(struct studentform student[],int *count,FILE *ptrToStudenst
                     printf("----------------------------succesfully change------------------------- \n");break;
             case 2: printf("last name is : ");
                     char newLastName[30];
-                    scanf("%s",newLastName); ;break;
+                    scanf("%s",newLastName);
                     strcpy(student[indexOfStudent].lastName,newLastName);
                     printf("----------------------------succesfully change------------------------- \n");break;
             case 3: {        //its a very imporatant key => in switch-case structure we must add varibale in {code-block};
@@ -653,12 +684,72 @@ void removeCourcesToStudent(struct studentform student[],int *count,FILE *ptrToS
         removeCourcesToStudent(student,count,ptrToStudenstFile);
     }
 }
+
+void addTeacher(varOfTeacher teacher[],int *count,FILE *ptrToTeacherFile){
+    getchar();
+    puts("teacher firstname ");
+    char firstName[50];
+    fgets(firstName,sizeof(firstName),stdin);
+    strcpy(teacher[*count].firstName,firstName);
+    fputs("teacher lastName ",stdout);
+    char lastName[50];
+    fgets(lastName,sizeof(lastName),stdin);
+    strcpy(teacher[*count].lastName,lastName);
+    teacher[*count].countOfCours = 0;
+    char curseName[20];
+    int result;
+    do{
+        printf("please enter course name ");
+        scanf("%s",curseName);
+        result = strcmp(curseName,"exit");
+        if(result != 0){
+            strcpy(teacher[*count].cource[teacher[*count].countOfCours].name,curseName);
+            (teacher[*count].countOfCours)++;
+        }
+    }while(result);
+
+    (*count)++;
+
+    //add in a file
+    addTeacherInfoToFile(teacher,count,ptrToTeacherFile);
+}
+
+void showteachers(varOfTeacher teacher[],int count){
+    printf("_______________________________\n");
+    for(int i = 0;i<count;i++){
+        puts("firstName : ");
+        puts(teacher[i].firstName);
+        puts("lastName : ");
+        puts(teacher[i].lastName);
+        for(int j = 0;j<teacher[i].countOfCours;j++){
+            printf("course%d : ",j+1);
+            puts(teacher[i].cource[j].name);
+        }
+    }
+    printf("_______________________________\n");
+}
+
+
 //|||||||||||||||||||||||||||||||||||||||||||||||===================={MAIN FUNCTION}==================||||||||||||||||||||||||||||||||||||||||||//
 int main(){
     FILE *ptrToStudenstFile;
     FILE *ptrToCourceFile;
+    FILE *ptrToTeacherFile;
     struct studentform student[50];
     storeSemester courceOfTerm[10];
+    varOfTeacher teacher[10];
+    int countOfTeacher = 0;
+
+
+    ptrToTeacherFile = fopen("techerFile.txt","rb");
+    if(ptrToTeacherFile != NULL){
+        fread(&countOfTeacher,sizeof(int),1,ptrToTeacherFile);
+        fread(teacher,sizeof(varOfTeacher),countOfTeacher,ptrToTeacherFile);
+    }else{
+        printf("-----teacher------file is not defind-------------- \n");
+    }
+    fclose(ptrToTeacherFile);
+
 
     // read Cources of {FILE}
     ptrToCourceFile = fopen("courcesFile.txt","r");
@@ -710,7 +801,7 @@ int main(){
             //{MENU}
             int userFirstChoice;
             do{
-                printf("\n\n         {~~~~~~~~ Please Choose One Of Them ~~~~~~~~}     \n1)Add student \n2)Remove student \n3)Edit student info \n4)Edit student grade \n5)show all students\n6)add Cource\n7)Edit cource info(incomplete)\n8)Show Cources \n9)add Cources To Student \n10)remove Cources To Student \n11)showStudentInfo \n0)Exit \n");
+                printf("\n\n         {~~~~~~~~ Please Choose One Of Them ~~~~~~~~}     \n1)Add student \n2)Remove student \n3)Edit student info \n4)Edit student grade \n5)show all students\n6)add Cource\n7)Edit cource info(incomplete)\n8)Show Cources \n9)add Cources To Student \n10)remove Cources To Student \n11)showStudentInfo\n-----------------\n12)add Teacher\n13)show teachers \n0)Exit \n");
                 scanf("%d",&userFirstChoice);
                 switch(userFirstChoice){
                     //studentInfo function
@@ -727,6 +818,8 @@ int main(){
                     case 9 : addCourcesToStudent(student,&countOfStudent,ptrToStudenstFile,courceOfTerm,countOfCorcesOfTerm);break;
                     case 10 : removeCourcesToStudent(student,&countOfStudent,ptrToStudenstFile);break;
                     case 11 : showStudentInfo(student,countOfStudent);break;
+                    case 12 : addTeacher(teacher,&countOfTeacher,ptrToTeacherFile);break;
+                    case 13 : showteachers(teacher,countOfTeacher);break;
                     case 0 : return 0;
                     default : printf("-----------please enter a valid number-------------- \n");break;
                 }
