@@ -1,13 +1,21 @@
-# ``------Student Adding Info System------`` #
+# ``Student Adding Info System`` #
 
-
+</br>
 
 ## Description ##
 This Is a system for adding,removing,editing,setting grad and ets.that is writting by c languge.
-## Languages that had uses for this project ##
-- c
+</br></br>
 
----
+## Languages that had uses for this project ##
+![](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
+- c(libarary)
+    - <stdio.h>
+    - <string.h>
+    - <stdlib.h>
+
+</br>
+
+
 ### e.g CODE ###
 ```c
     switch(userFirstChoice){
