@@ -10,8 +10,8 @@ struct grades{
 };
 struct courceInTerm{
     int numOfTerm;
+    int countOfCorses; //its a info about newt elem;
     struct grades cource[5];
-    int countOfCorses;
 };
 struct studentform{
     char firstName[255];
@@ -20,7 +20,7 @@ struct studentform{
     int birthDate[3];
     int studentNumber;
     int gender;
-    int currentTerm;
+    int currentTerm;  //its a info about newt elem;
     struct courceInTerm term[10];
 };
 
@@ -32,7 +32,7 @@ typedef struct{
 typedef struct{
     char firstName[50];
     char lastName[50];
-    int countOfCours;
+    int countOfCours; //its a info about newt elem;
     varOfCorse cource[10];
 } varOfTeacher;
 
@@ -42,10 +42,10 @@ struct courceForm{
     int credits;
 };
 struct courcesofTerm{
+    int countOfCource; //its a info about newt elem;
     struct courceForm cource[10];
-    int countOfCource;
 };
-typedef struct courcesofTerm storeSemester;
+typedef struct courcesofTerm storeSemester;     // (storesemester) instedOf (struct courceofTerm)
 
 
 //-----make {ENUMERATE} of month-----
@@ -144,7 +144,10 @@ void getCources(struct studentform student[],int *count,storeSemester courceOfTe
         printf("\n\nplease choose one of them =>\n____________________________________________________________________________________________________________\n\n");
         int j;
         for(j = 0;j<courceOfTerm[(student[*count].currentTerm)-1].countOfCource;j++){
-            printf("%d)=> %s (%d credits)\n",j+1,courceOfTerm[(student[*count].currentTerm)-1].cource[j].semesterName,courceOfTerm[(student[*count].currentTerm)-1].cource[j].credits);
+            printf("%d)=> %s (%d credits)\n",
+            j+1,
+            courceOfTerm[(student[*count].currentTerm)-1].cource[j].semesterName,
+            courceOfTerm[(student[*count].currentTerm)-1].cource[j].credits);
         }
         printf("%d)0 to exit\n",j+1);
         printf("____________________________________________________________________________________________________________\n");
@@ -230,6 +233,7 @@ void showStudentdCourses(struct studentform student[],int indexOfStudent){
 }
 
 //====================================================={ KEY FUNCTIONS }================================================//
+// دقت کنی تو زبان سی ورودی رو از کاربر میگری و مستقیما اونو وارد جایی که باید باشه میکنی ولی تو زبان های دیگه اطلاعات و میکری تو فرم میندازی بعد فرم و وارد میکنی.
 void addStudent(struct studentform student[],int *count,FILE *ptrToStudenstFile,storeSemester courceOfTerm[]){
     printf("\nFirstName : ex(mohammad) => "); 
     scanf("%30s",student[*count].firstName);
@@ -306,7 +310,7 @@ void removeStudent(struct studentform student[],int *count,FILE *ptrToStudenstFi
             if(result == 0){
                 resultFlag = 1;
                 for(int j = i; j<(*count); j++){
-                    student[j] = student[j+1];
+                    student[j] = student[j+1];     //دقت کنی آرایه رو میشه کپی کرد ولی استرینگ و نه.
                 }
                 printf("---------------sucessfully remove that---------------- \n");
             }
@@ -818,6 +822,7 @@ int main(){
                     case 9 : addCourcesToStudent(student,&countOfStudent,ptrToStudenstFile,courceOfTerm,countOfCorcesOfTerm);break;
                     case 10 : removeCourcesToStudent(student,&countOfStudent,ptrToStudenstFile);break;
                     case 11 : showStudentInfo(student,countOfStudent);break;
+                    // teacher(for test)
                     case 12 : addTeacher(teacher,&countOfTeacher,ptrToTeacherFile);break;
                     case 13 : showteachers(teacher,countOfTeacher);break;
                     case 0 : return 0;
