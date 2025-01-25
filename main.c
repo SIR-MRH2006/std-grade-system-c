@@ -10,7 +10,7 @@ struct grades{
 };
 struct courceInTerm{
     int numOfTerm;
-    int countOfCorses; //its a info about newt elem;
+    int countOfCorses; //its an info about newt elem;
     struct grades cource[5];
 };
 struct studentform{
@@ -20,7 +20,7 @@ struct studentform{
     int birthDate[3];
     int studentNumber;
     int gender;
-    int currentTerm;  //its a info about newt elem;
+    int currentTerm;  //its an info about newt elem;
     struct courceInTerm term[10];
 };
 
@@ -32,7 +32,7 @@ typedef struct{
 typedef struct{
     char firstName[50];
     char lastName[50];
-    int countOfCours; //its a info about newt elem;
+    int countOfCours; //its an info about newt elem;
     varOfCorse cource[10];
 } varOfTeacher;
 
@@ -42,7 +42,7 @@ struct courceForm{
     int credits;
 };
 struct courcesofTerm{
-    int countOfCource; //its a info about newt elem;
+    int countOfCource; //its an info about newt elem;
     struct courceForm cource[10];
 };
 typedef struct courcesofTerm storeSemester;     // (storesemester) instedOf (struct courceofTerm)
